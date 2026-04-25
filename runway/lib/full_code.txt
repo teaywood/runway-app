@@ -1,0 +1,1538 @@
+// --- lib/main.dart --
+
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'screens/running_screen.dart';
+import 'screens/course_running_screen.dart';
+import 'screens/countdown_screen.dart';
+
+void main() {
+  runApp(const RunWayApp());
+}
+
+class RunWayApp extends StatelessWidget {
+  const RunWayApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'RUN-WAY',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        scaffoldBackgroundColor: const Color(0xFFF8F7FF),
+        useMaterial3: true,
+      ),
+      home: const MainScreen(),
+    );
+  }
+}
+
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _screens = [
+    const HomeScreen(),
+    const PlaceholderScreen(title: 'My Room', icon: Icons.person_outline),
+    const PlaceholderScreen(title: 'Crew', icon: Icons.groups_outlined),
+    const PlaceholderScreen(
+      title: 'Challenge',
+      icon: Icons.emoji_events_outlined,
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: IndexedStack(index: _selectedIndex, children: _screens),
+      bottomNavigationBar: BottomNavigationBar(
+      currentIndex: _selectedIndex,
+      onTap: (index) {
+        setState(() => _selectedIndex = index);
+      },
+      type: BottomNavigationBarType.fixed,
+      selectedItemColor: const Color(0xFF7C6BFF),
+      unselectedItemColor: Colors.grey,
+      items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: '홈',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: '마이룸',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.people),
+          label: '소셜',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.emoji_events),
+          label: '챌린지',
+        ),
+      ],
+    ),
+    );
+  }
+}
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _runningMode = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8F7FF),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text(
+          'RUN-WAY',
+          style: TextStyle(
+            color: Color(0xFF7C6BFF),
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+            letterSpacing: 2,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.menu, color: Color(0xFF7C6BFF)),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              flex: 5,
+              child: Container(
+                margin: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.person,
+                    size: 150,
+                    color: Color(0xFFB8A9FF),
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 3,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    // ✅ 너비를 명시적으로 설정하여 초기 렌더링 시 크기 보장
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width - 40, // 좌우 패딩 20씩 고려
+                      child: CupertinoSlidingSegmentedControl<int>(
+                        groupValue: _runningMode,
+                        backgroundColor: const Color(0xFFEDE9FF),
+                        thumbColor: Colors.white,
+                        children: {
+                          0: Container(
+                            constraints: BoxConstraints(
+                              minWidth: (MediaQuery.of(context).size.width - 44) / 2, // 각 버튼 최소 너비
+                              minHeight: 40, // 최소 높이
+                            ),
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: const FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                '일반 러닝',
+                                maxLines: 1,
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ),
+                          ),
+                          1: Container(
+                            constraints: BoxConstraints(
+                              minWidth: (MediaQuery.of(context).size.width - 44) / 2,
+                              minHeight: 40,
+                            ),
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: const FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                '코스 러닝',
+                                maxLines: 1,
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ),
+                          ),
+                        },
+                        onValueChanged: (value) {
+                          if (value != null) {
+                            setState(() => _runningMode = value);
+                          }
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+                    // ✅ 시작 버튼 (화면 너비의 65%)
+                    Center(
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.65,
+                        height: 60,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // _runningMode: 0 = 일반 러닝, 1 = 코스 러닝
+                            if (_runningMode == 0) {
+                              // 일반 러닝: 바로 카운트다운 → RunningScreen
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const CountdownScreen(
+                                    targetScreen: RunningScreen(),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              // 코스 러닝: 팝업 먼저 띄우기
+                              showDialog(
+                                context: context,
+                                builder: (context) =>
+                                    const CourseConditionDialog(),
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF7C6BFF),
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            elevation: 5,
+                          ),
+                          child: const Text(
+                            '시작',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 2,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20), // ✅ 하단 여백 추가
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PlaceholderScreen extends StatelessWidget {
+  final String title;
+  final IconData icon;
+
+  const PlaceholderScreen({super.key, required this.title, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8F7FF),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(
+          title,
+          style: const TextStyle(
+            color: Color(0xFF7C6BFF),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 100, color: const Color(0xFFB8A9FF)),
+            const SizedBox(height: 20),
+            Text(
+              '$title Coming Soon',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Color(0xFF7C6BFF),
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 🎯 COURSE CONDITION DIALOG
+// 코스 러닝 모드 선택 시 뜨는 조건 입력 팝업
+// ═══════════════════════════════════════════════════════════
+class CourseConditionDialog extends StatefulWidget {
+  const CourseConditionDialog({super.key});
+
+  @override
+  State<CourseConditionDialog> createState() => _CourseConditionDialogState();
+}
+
+class _CourseConditionDialogState extends State<CourseConditionDialog> {
+  static const Color kPurple = Color(0xFF7C6BFF);
+
+  double _targetDistance = 5.0; // 목표 거리 (기본값 5km)
+  String _courseType = '편도'; // 코스 형태 (편도/왕복)
+  bool _safeMode = false; // 안심 코스 모드 (CCTV/가로등 우선)
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ═══════════════════════════════════════════
+            // 제목
+            // ═══════════════════════════════════════════
+            const Text(
+              '맞춤형 코스 설정',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: kPurple,
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // ═══════════════════════════════════════════
+            // 1️⃣ 목표 거리 (Slider)
+            // ═══════════════════════════════════════════
+            Text(
+              '목표 거리: ${_targetDistance.toStringAsFixed(1)} km',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF2D2D3A),
+              ),
+            ),
+            Slider(
+              value: _targetDistance,
+              min: 1.0,
+              max: 20.0,
+              divisions: 19,
+              activeColor: kPurple,
+              onChanged: (value) {
+                setState(() {
+                  _targetDistance = value;
+                });
+              },
+            ),
+            const SizedBox(height: 20),
+
+            // ═══════════════════════════════════════════
+            // 2️⃣ 코스 형태 (Radio 버튼)
+            // ═══════════════════════════════════════════
+            const Text(
+              '코스 형태',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF2D2D3A),
+              ),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: RadioListTile<String>(
+                    title: const Text('편도'),
+                    value: '편도',
+                    groupValue: _courseType,
+                    activeColor: kPurple,
+                    contentPadding: EdgeInsets.zero,
+                    onChanged: (value) {
+                      setState(() {
+                        _courseType = value!;
+                      });
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: RadioListTile<String>(
+                    title: const Text('왕복'),
+                    value: '왕복',
+                    groupValue: _courseType,
+                    activeColor: kPurple,
+                    contentPadding: EdgeInsets.zero,
+                    onChanged: (value) {
+                      setState(() {
+                        _courseType = value!;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            // ═══════════════════════════════════════════
+            // 3️⃣ 안심 코스 모드 (Switch)
+            // ═══════════════════════════════════════════
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  '안심 코스 모드\n(CCTV/가로등 우선)',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF2D2D3A),
+                  ),
+                ),
+                Switch(
+                  value: _safeMode,
+                  activeColor: kPurple,
+                  onChanged: (value) {
+                    setState(() {
+                      _safeMode = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 28),
+
+            // ═══════════════════════════════════════════
+            // 하단 버튼: "코스 탐색 및 시작"
+            // ═══════════════════════════════════════════
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  // 팝업 닫기
+                  Navigator.pop(context);
+                  // 카운트다운 → CourseRunningScreen으로 이동
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CountdownScreen(
+                        targetScreen: CourseRunningScreen(
+                          targetDistance: _targetDistance,
+                          courseType: _courseType,
+                          safeMode: _safeMode,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: kPurple,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: const Text(
+                  '코스 탐색 및 시작',
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+// --- lib/screens/running_screen.dart ---
+
+import 'package:flutter/material.dart';
+import 'result_screen.dart';
+
+// ═══════════════════════════════════════════════════════════
+// 🏃 RUNNING SCREEN
+// 사용자가 달리기를 시작했을 때 보이는 메인 러닝 화면
+// 레이아웃 구조: AppBar → 지도(Expanded) → 정보창 → 버튼
+// ═══════════════════════════════════════════════════════════
+class RunningScreen extends StatelessWidget {
+  const RunningScreen({super.key});
+
+  // 🎨 앱 전체에서 쓰는 포인트 컬러 (라벤더/퍼플)
+  static const Color kPurple = Color(0xFF7C6BFF);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // ─────────────────────────────────────────
+      // 🤍 배경: 깔끔한 화이트
+      // ─────────────────────────────────────────
+      backgroundColor: Colors.white,
+
+      // ═══════════════════════════════════════════
+      // 1️⃣ 상단 AppBar
+      // ═══════════════════════════════════════════
+      appBar: AppBar(
+        backgroundColor: Colors.white, // 흰색 배경
+        elevation: 0, // 그림자 제거 (깔끔하게)
+        centerTitle: true,
+        // 좌측: 'RUN-WAY' 텍스트 로고
+        title: const Text(
+          'RUN-WAY',
+          style: TextStyle(
+            color: kPurple, // 퍼플 컬러
+            fontWeight: FontWeight.bold, // 볼드체
+            fontSize: 22,
+            letterSpacing: 1.5, // 자간 (로고 느낌)
+          ),
+        ),
+
+        // 우측: 햄버거 메뉴 (설정) 아이콘
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.menu, color: kPurple),
+            onPressed: () {
+              // TODO: 설정 메뉴 열기
+            },
+          ),
+        ],
+      ),
+
+      // ═══════════════════════════════════════════
+      // 본문 시작 (SafeArea로 노치/홈바 영역 보호)
+      // ═══════════════════════════════════════════
+      body: SafeArea(
+        child: Column(
+          children: [
+            // ═════════════════════════════════════
+            // 2️⃣ 중단: 지도 영역 (Expanded 필수!)
+            //    화면 크기 변해도 절대 사라지지 않음
+            // ═════════════════════════════════════
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                // Stack: 가짜 지도 위에 아바타 박스를 겹쳐 놓기
+                child: Stack(
+                  children: [
+                    // ─────────────────────────────
+                    // 🗺️ 바탕: 가짜 지도 (연한 회색)
+                    // ─────────────────────────────
+                    Container(
+                      // double.infinity = "부모가 허락하는 만큼 꽉 채워!"
+                      width: double.infinity,
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300], // 연한 회색
+                        borderRadius: BorderRadius.circular(20), // 둥근 모서리
+                      ),
+                      // 가짜 지도임을 알 수 있게 가운데 텍스트 (선택)
+                      child: Center(
+                        child: Text(
+                          '🗺️ MAP AREA',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey[600],
+                            letterSpacing: 2,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // ─────────────────────────────
+                    // 🏃 좌상단: 달리는 아바타 박스
+                    // Positioned: Stack 안에서 위치 지정
+                    // ─────────────────────────────
+                    Positioned(
+                      top: 16, // 위에서 16px 여백
+                      left: 16, // 왼쪽에서 16px 여백
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white, // 흰색 박스
+                          borderRadius: BorderRadius.circular(12),
+                          // 살짝의 그림자로 떠있는 느낌
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Text(
+                          '달리는 아바타',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF2D2D3A),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // ═════════════════════════════════════
+            // 러닝 정보창 (거리/페이스/시간)
+            // ═════════════════════════════════════
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+              child: Row(
+                // spaceEvenly: 세 항목 사이 간격을 균등하게 띄움
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: const [
+                  // 📏 거리
+                  _InfoItem(value: '3.14', unit: 'km', label: '거리'),
+                  // ⚡ 페이스
+                  _InfoItem(value: "5'30\"", unit: '/km', label: '페이스'),
+                  // ⏱️ 시간
+                  _InfoItem(value: '17:30', unit: 'time', label: '시간'),
+                ],
+              ),
+            ),
+
+            // ═════════════════════════════════════
+            // 4️⃣ 최하단: 조작 버튼부 (일시정지 / 종료)
+            // ═════════════════════════════════════
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Row(
+                children: [
+                  // ⏸️ 일시정지 버튼 (라벤더)
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        // TODO: 일시정지 로직
+                      },
+                      icon: const Icon(Icons.pause, size: 24),
+                      label: const Text(
+                        '일시정지',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: kPurple, // 라벤더
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 18),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16), // 둥근 모서리
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 12), // 버튼 사이 간격
+                  // ⏹️ 종료 버튼 (빨간색 계열로 구분)
+                  // ⏹️ 종료 버튼 (빨간색 계열로 구분)
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        // ✅ 결과 화면으로 이동 (뒤로가기 불가능하게 교체)
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ResultScreen(),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.stop, size: 24),
+                      label: const Text(
+                        '종료',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFE53E5E), // 빨강 계열
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 18),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 📊 _InfoItem: 러닝 정보 한 칸 위젯 (거리/페이스/시간 공통)
+// 숫자는 크고 굵게, 단위와 라벨은 작게
+// ═══════════════════════════════════════════════════════════
+class _InfoItem extends StatelessWidget {
+  final String value; // 큰 숫자 (예: '3.14')
+  final String unit; // 단위 (예: 'km')
+  final String label; // 라벨 (예: '거리')
+
+  const _InfoItem({
+    required this.value,
+    required this.unit,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // 🔢 큰 숫자
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 24, // 요청대로 24
+            fontWeight: FontWeight.bold, // 두껍게
+            color: Color(0xFF2D2D3A),
+          ),
+        ),
+        const SizedBox(height: 4),
+        // 📐 단위 (작게)
+        Text(
+          unit,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey[600],
+          ),
+        ),
+        const SizedBox(height: 2),
+        // 🏷️ 라벨 (제일 작게)
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            color: Colors.grey[500],
+            letterSpacing: 1,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+
+
+// --- lib/screens/course_running_screen.dart ---
+
+import 'package:flutter/material.dart';
+import 'result_screen.dart';
+
+// ═══════════════════════════════════════════════════════════
+// 🗺️ COURSE RUNNING SCREEN
+// 코스 러닝 모드 전용 화면 (기존 RunningScreen 복사본)
+// 차이점: AI 경로선 표시 + 남은 코스 거리 + 프로그레스 바
+// ═══════════════════════════════════════════════════════════
+class CourseRunningScreen extends StatelessWidget {
+  final double targetDistance;
+  final String courseType;
+  final bool safeMode;
+
+  const CourseRunningScreen({
+    super.key,
+    required this.targetDistance,
+    required this.courseType,
+    required this.safeMode,
+  });
+
+  static const Color kPurple = Color(0xFF7C6BFF);
+
+  @override
+  Widget build(BuildContext context) {
+    // ═══════════════════════════════════════════
+    // 🎯 가짜 데이터 (추후 실제 러닝 로직과 연동)
+    // ═══════════════════════════════════════════
+    const double currentDistance = 3.0; // 현재 달린 거리 (km)
+    final double progressRate =
+        currentDistance / targetDistance; // 진행률 (0.0~1.0)
+    final double remainingDistance = targetDistance - currentDistance; // 남은 거리
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          'RUN-WAY',
+          style: TextStyle(
+            color: kPurple,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+            letterSpacing: 1.5,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.menu, color: kPurple),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // ═════════════════════════════════════
+            // 지도 영역 (AI 경로선 표시)
+            // ═════════════════════════════════════
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Stack(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '🗺️ MAP AREA',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey[600],
+                                letterSpacing: 2,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            // ⬇️ AI 코스 경로선 표시 영역
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: kPurple.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Text(
+                                '🤖 AI 코스 경로선 표시 영역',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: kPurple,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 16,
+                      left: 16,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Text(
+                          '달리는 아바타',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF2D2D3A),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // ═════════════════════════════════════
+            // 🎯 목표 거리 대비 진행률 프로그레스 바
+            // ═════════════════════════════════════
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  // 달성률 텍스트 (오른쪽 정렬)
+                  Text(
+                    '목표까지 ${(progressRate * 100).toStringAsFixed(0)}% 달성! · 남은 거리: ${remainingDistance.toStringAsFixed(1)}km',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // 프로그레스 바
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12), // 둥근 모서리
+                    child: LinearProgressIndicator(
+                      value: progressRate, // 진행률 (0.0 ~ 1.0)
+                      minHeight: 16, // 막대 두께
+                      backgroundColor: const Color(0xFFEDE9FF), // 연한 보라색 배경
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        kPurple, // 채워지는 색 (진한 퍼플)
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // ═════════════════════════════════════
+            // 러닝 정보창 (거리/페이스/시간 + 남은 코스 거리)
+            // ═════════════════════════════════════
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+              child: Column(
+                children: [
+                  // 기존 3개 (거리/페이스/시간)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: const [
+                      _InfoItem(value: '3.14', unit: 'km', label: '거리'),
+                      _InfoItem(value: "5'30\"", unit: '/km', label: '페이스'),
+                      _InfoItem(value: '17:30', unit: 'time', label: '시간'),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  // ⬇️ 남은 코스 거리
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF8F7FF),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: kPurple.withOpacity(0.3),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          '남은 코스 거리',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF2D2D3A),
+                          ),
+                        ),
+                        Text(
+                          '${remainingDistance.toStringAsFixed(2)} km',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: kPurple,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // ═════════════════════════════════════
+            // 조작 버튼부 (일시정지 / 종료)
+            // ═════════════════════════════════════
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {},
+                      icon: const Icon(Icons.pause, size: 24),
+                      label: const Text(
+                        '일시정지',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: kPurple,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 18),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        // ✅ 결과 화면으로 이동 (뒤로가기 불가능하게 교체)
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ResultScreen(),
+                          ),
+                        );
+                      },
+
+                      icon: const Icon(Icons.stop, size: 24),
+                      label: const Text(
+                        '종료',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFE53E5E),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 18),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 📊 _InfoItem: 러닝 정보 한 칸 위젯 (거리/페이스/시간 공통)
+// 숫자는 크고 굵게, 단위와 라벨은 작게
+// ═══════════════════════════════════════════════════════════
+class _InfoItem extends StatelessWidget {
+  final String value; // 큰 숫자 (예: '3.14')
+  final String unit; // 단위 (예: 'km')
+  final String label; // 라벨 (예: '거리')
+
+  const _InfoItem({
+    required this.value,
+    required this.unit,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // 🔢 큰 숫자
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 24, // 요청대로 24
+            fontWeight: FontWeight.bold, // 두껍게
+            color: Color(0xFF2D2D3A),
+          ),
+        ),
+        const SizedBox(height: 4),
+        // 📐 단위 (작게)
+        Text(
+          unit,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey[600],
+          ),
+        ),
+        const SizedBox(height: 2),
+        // 🏷️ 라벨 (제일 작게)
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            color: Colors.grey[500],
+            letterSpacing: 1,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+
+
+// --- lib/screens/countdown_screen.dart ---
+
+import 'package:flutter/material.dart';
+import 'dart:async';
+
+// ═══════════════════════════════════════════════════════════
+// ⏱️ COUNTDOWN SCREEN
+// 홈 → 러닝 화면 사이 5초 카운트다운 (몰입감 UP)
+// 5, 4, 3, 2, 1 → GO! → RunningScreen 자동 전환
+// ═══════════════════════════════════════════════════════════
+class CountdownScreen extends StatefulWidget {
+  final Widget targetScreen;
+
+  const CountdownScreen({super.key, required this.targetScreen});
+
+  @override
+  State<CountdownScreen> createState() => _CountdownScreenState();
+}
+
+class _CountdownScreenState extends State<CountdownScreen> {
+  static const Color kPurple = Color(0xFF7C6BFF);
+
+  int _count = 5; // 카운트 시작 숫자
+  String _displayText = '5'; // 화면에 보여줄 텍스트
+  Timer? _timer; // 1초마다 동작하는 타이머
+
+  @override
+  void initState() {
+    super.initState();
+    _startCountdown();
+  }
+
+  void _startCountdown() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        _count--;
+        if (_count > 0) {
+          // 5 → 4 → 3 → 2 → 1
+          _displayText = '$_count';
+        } else if (_count == 0) {
+          // 마지막엔 GO! 표시
+          _displayText = 'GO!';
+        } else {
+          // GO! 보여준 뒤 목적지 화면으로 이동
+          timer.cancel();
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => widget.targetScreen),
+          );
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    // 메모리 누수 방지: 화면 벗어나면 타이머 취소
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: kPurple, // 풀스크린 퍼플 배경
+      body: Center(
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 400),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            // 숫자 바뀔 때마다 확대 + 페이드인 애니메이션
+            return ScaleTransition(
+              scale: animation,
+              child: FadeTransition(opacity: animation, child: child),
+            );
+          },
+          child: Text(
+            _displayText,
+            key: ValueKey<String>(_displayText), // key 필수! (애니메이션 트리거)
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: _displayText == 'GO!' ? 120 : 180,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 2,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+// --- lib/screens/result_screen.dart ---
+
+import 'package:flutter/material.dart';
+import '../main.dart'; // HomeScreen을 불러오기 위함
+
+// ═══════════════════════════════════════════════════════════
+// 🏆 RESULT SCREEN
+// 러닝 종료 후 결과를 보여주는 화면
+// 디자인: 화이트 배경 + 라벤더/퍼플 포인트 컬러
+// ═══════════════════════════════════════════════════════════
+class ResultScreen extends StatelessWidget {
+  const ResultScreen({super.key});
+
+  static const Color kPurple = Color(0xFF7C6BFF);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      // ═══════════════════════════════════════════
+      // AppBar
+      // ═══════════════════════════════════════════
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        automaticallyImplyLeading: false, // 뒤로가기 버튼 제거
+        title: const Text(
+          'RUN-WAY',
+          style: TextStyle(
+            color: kPurple,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+            letterSpacing: 1.5,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.menu, color: kPurple),
+            onPressed: () {
+              // TODO: 설정 메뉴
+            },
+          ),
+        ],
+      ),
+      // ═══════════════════════════════════════════
+      // Body (스크롤 가능)
+      // ═══════════════════════════════════════════
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ─────────────────────────────────────
+              // 1️⃣ 달린 코스 영역
+              // ─────────────────────────────────────
+              const Text(
+                '달린 코스',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF2D2D3A),
+                ),
+              ),
+              const SizedBox(height: 12),
+              // 가짜 지도 영역
+              SizedBox(
+                height: 250,
+                child: Stack(
+                  children: [
+                    // 지도 배경
+                    Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Center(
+                        child: Text(
+                          '🗺️ 달린 경로 지도',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey[600],
+                            letterSpacing: 2,
+                          ),
+                        ),
+                      ),
+                    ),
+                    // 좌측 하단: 박수 치는 아바타
+                    Positioned(
+                      bottom: 16,
+                      left: 16,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Text(
+                          '박수 치는 아바타',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF2D2D3A),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 28),
+
+              // ─────────────────────────────────────
+              // 2️⃣ 러닝 기록 영역
+              // ─────────────────────────────────────
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    '러닝 기록',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF2D2D3A),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.share, color: kPurple),
+                    onPressed: () {
+                      // TODO: 공유 기능
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+
+              // 경험치 바 (얇은 프로그레스)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: LinearProgressIndicator(
+                  value: 0.65, // 예시: 65% 달성
+                  minHeight: 8,
+                  backgroundColor: const Color(0xFFEDE9FF),
+                  valueColor: const AlwaysStoppedAnimation<Color>(kPurple),
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // 기록 데이터 + 상세 기록 버튼
+              Stack(
+                children: [
+                  // 좌측: 기록 데이터
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _RecordItem(label: '거리', value: '6.12', unit: 'km'),
+                      const SizedBox(height: 16),
+                      _RecordItem(label: '시간', value: '39:47', unit: ''),
+                      const SizedBox(height: 16),
+                      _RecordItem(label: '페이스', value: "6'30\"", unit: '/km'),
+                      const SizedBox(height: 16),
+                      _RecordItem(label: '칼로리', value: '367', unit: 'kcal'),
+                    ],
+                  ),
+                  // 우측 하단: 상세 기록 버튼
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: TextButton(
+                      onPressed: () {
+                        // TODO: 상세 기록 화면으로 이동
+                      },
+                      child: const Text(
+                        '상세 기록 >',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: kPurple,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 32),
+
+              // ─────────────────────────────────────
+              // 3️⃣ 하단 조작부 (보상확인 / 홈)
+              // ─────────────────────────────────────
+              Row(
+                children: [
+                  // 보상확인 버튼 (아웃라인)
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        // TODO: 보상 확인 화면
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: kPurple, width: 2),
+                        padding: const EdgeInsets.symmetric(vertical: 18),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: const Text(
+                        '보상확인',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: kPurple,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  // 홈 버튼 (퍼플 배경)
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // ✅ 하단 탭 바를 포함한 메인 화면으로 돌아가면서 이전 화면 스택 모두 제거
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MainScreen(),
+                          ),
+                          (route) => false, // 모든 이전 화면 제거
+                        );
+                      },
+
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: kPurple,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 18),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: const Text(
+                        '홈',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 📊 _RecordItem: 기록 항목 위젯 (거리/시간/페이스/칼로리)
+// ═══════════════════════════════════════════════════════════
+class _RecordItem extends StatelessWidget {
+  final String label;
+  final String value;
+  final String unit;
+
+  const _RecordItem({
+    required this.label,
+    required this.value,
+    required this.unit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey[600],
+          ),
+        ),
+        const SizedBox(height: 4),
+        RichText(
+          text: TextSpan(
+            style: const TextStyle(
+              fontSize: 36,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF2D2D3A),
+            ),
+            children: [
+              TextSpan(text: value),
+              if (unit.isNotEmpty)
+                TextSpan(
+                  text: ' $unit',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey[500],
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
