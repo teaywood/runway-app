@@ -59,7 +59,7 @@ class _RunningScreenState extends State<RunningScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       // ─────────────────────────────────────────
-      // 🤍 배경: 깔끔한 화이트
+      // 🤍 배경: 깔끔한 화인트
       // ─────────────────────────────────────────
       backgroundColor: Colors.white,
 
@@ -99,7 +99,7 @@ class _RunningScreenState extends State<RunningScreen> {
         child: Column(
           children: [
             // ═════════════════════════════════════
-            // 2️⃣ 중단: 지도 영역 (Expanded 필수!)
+            // 2️⃣ 중단: 지도 영역 (Expanded 필숙!)
             //    화면 크기 변해도 절대 사라지지 않음
             // ═════════════════════════════════════
             Expanded(
@@ -134,7 +134,7 @@ class _RunningScreenState extends State<RunningScreen> {
                     ),
 
                     // ─────────────────────────────
-                    // 🏃 좌상단: 달리는 아바타 박스
+                    // 🏃 좌생단: 달리는 아바타 박스
                     // Positioned: Stack 안에서 위치 지정
                     // ─────────────────────────────
                     Positioned(
@@ -148,7 +148,7 @@ class _RunningScreenState extends State<RunningScreen> {
                         decoration: BoxDecoration(
                           color: Colors.white, // 흰색 박스
                           borderRadius: BorderRadius.circular(12),
-                          // 살짝의 그림자로 떠있는 느낌
+                          // 살퇝의 그림자로 떠있는 느낌
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.1),
@@ -180,7 +180,7 @@ class _RunningScreenState extends State<RunningScreen> {
               child: Row(
                 // spaceEvenly: 세 항목 사이 간격을 균등하게 띄움
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [
+                children: [
                   // 📏 거리
                   _InfoItem(value: _distance.toStringAsFixed(2), unit: 'km', label: '거리'),
                   // ⚡ 페이스
@@ -192,13 +192,13 @@ class _RunningScreenState extends State<RunningScreen> {
             ),
 
             // ═════════════════════════════════════
-            // 4️⃣ 최하단: 조작 버튼부 (일시정지 / 종료)
+            // 4️⃣ 최하단: 조작 버튼부 (읻시정지 / 종료)
             // ═════════════════════════════════════
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               child: Row(
                 children: [
-                  // ⏸️ 일시정지 버튼 (라벤더)
+                  // ⏸️ 읻시정지 버튼 (라벤더)
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
@@ -225,11 +225,11 @@ class _RunningScreenState extends State<RunningScreen> {
 
                   const SizedBox(width: 12), // 버튼 사이 간격
                   // ⏹️ 종료 버튼 (빨간색 계열로 구분)
-                  // ⏹️ 종료 버튼 (빨간색 계열로 구분)
+                  // 한벤 주소 이동 대신 뢈렰: 그대로 레놔을 렜들들
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        // ✅ 결과 화면으로 이동 (뒤로가기 불가능하게 교체)
+                        // ✅ 경괼 화면 일로 이동 (다로가기 불가뢥하게 교체)
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
@@ -266,8 +266,8 @@ class _RunningScreenState extends State<RunningScreen> {
 }
 
 // ═══════════════════════════════════════════════════════════
-// 📊 _InfoItem: 러닝 정보 한 칸 위젯 (거리/페이스/시간 공통)
-// 숫자는 크고 굵게, 단위와 라벨은 작게
+// 📊 _InfoItem: 러닝 정보 한 큰 위젯 (거리/페이스/시간 곷톹)
+// 숫 자는 홬고 굱게, 단위와 라벨은 작게
 // ═══════════════════════════════════════════════════════════
 class _InfoItem extends StatelessWidget {
   final String value; // 큰 숫자 (예: '3.14')
