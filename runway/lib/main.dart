@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'core/app_theme.dart';
 import 'providers/selected_avatar_provider.dart';
 import 'shared/widgets/main_screen.dart';
+import 'screen/loading/loading_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
             scrolledUnderElevation: 0,
           ),
         ),
-        home: const MainScreen(),
+        home: const LoadingScreen(),
         debugShowCheckedModeBanner: false,
       ),
     );
