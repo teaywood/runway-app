@@ -23,7 +23,7 @@ class _SocialScreenState extends State<SocialScreen> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final List<FeedItem> _feedItems = [
-    FeedItem(message: '오늘 러닝 겁나 힘들었음'),
+    FeedItem(message: '오늘 날씨가 너무 덥네요'),
   ];
   Uint8List? _selectedImageBytes;
 

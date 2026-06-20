@@ -147,15 +147,6 @@ class _RoomHeader extends StatelessWidget {
             color: AppColors.primary,
           ),
         ),
-        SizedBox(height: 2),
-        Text(
-          '나의 런웨이',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w800,
-            color: AppColors.textPrimary,
-          ),
-        ),
       ],
     );
   }

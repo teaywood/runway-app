@@ -23,15 +23,6 @@ class CourseProgressSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                '목표까지 ${(progressRate * 100).toStringAsFixed(0)}% 달성! · '
-                '남은 거리: ${remainingDistance.toStringAsFixed(1)}km',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey[700],
-                ),
-              ),
               const SizedBox(height: 8),
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),

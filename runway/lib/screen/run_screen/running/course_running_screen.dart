@@ -36,7 +36,6 @@ class _CourseRunningScreenState extends State<CourseRunningScreen>
   }
 
   void _onStop() {
-    // ── 종료 시점의 진행률을 캡처 ──
     final finalProgress =
         (distance / widget.targetDistance).clamp(0.0, 1.0);
 
@@ -50,7 +49,7 @@ class _CourseRunningScreenState extends State<CourseRunningScreen>
           pace: formattedPace,
           calories: estimatedCalories,
           courseImagePath: widget.courseImagePath,
-          progress: finalProgress, // ← 추가
+          progress: finalProgress,
         ),
       ),
     );
@@ -58,7 +57,7 @@ class _CourseRunningScreenState extends State<CourseRunningScreen>
 
   @override
   Widget build(BuildContext context) {
-    // 🎯 진행률 계산 (Course 고유)
+    // 🎯 진행률 계산
     final progressRate =
         (distance / widget.targetDistance).clamp(0.0, 1.0);
     final remainingDistance =
@@ -70,13 +69,14 @@ class _CourseRunningScreenState extends State<CourseRunningScreen>
       body: SafeArea(
         child: Column(
           children: [
-            // 지도 (코스 이미지 + AI 경로선 칩)
+            // 지도 + 실시간 경로 트래킹
             Expanded(
               child: RunMapArea(
                 courseImagePath: widget.courseImagePath,
+                trackingProgress: progressRate, // ← 추가!
               ),
             ),
-            // 진행률 바 (Course 고유)
+            // 진행률 바
             CourseProgressSection(
               progressRate: progressRate,
               remainingDistance: remainingDistance,
@@ -100,7 +100,7 @@ class _CourseRunningScreenState extends State<CourseRunningScreen>
                 ],
               ),
             ),
-            // 컨트롤 바 (공통)
+            // 컨트롤 바
             RunControlBar(
               isPaused: isPaused,
               onPauseToggle: togglePause,

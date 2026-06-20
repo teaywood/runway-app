@@ -238,7 +238,7 @@ class _ConditionBadge extends StatelessWidget {
               color: AppColors.primary, size: 18),
           const SizedBox(width: 8),
           Text(
-            '${distance.toStringAsFixed(1)} km  ·  $courseType  ·  안심 기본 적용',
+            '${distance.toStringAsFixed(1)} km  ·  $courseType',
             style: const TextStyle(
               color:      AppColors.primary,
               fontSize:   13,
