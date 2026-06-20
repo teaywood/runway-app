@@ -20,37 +20,28 @@ class ClosetAvatarViewer extends StatelessWidget {
     // 벚꽃이면 avatar_ver2.png, 아니면 기본 avatar_full.png
     final basePath = overridePath ?? kAvatarBodyAsset;
 
-    // ═══════════════════════════════════════════════════
-    // ✅ [수정] 정렬 기준: 하단 중앙 (bottomCenter)
-    //
-    // 이전: Alignment(-0.25, -0.05) → 이미지 중심 기준 수동 오프셋
-    // 수정: bottomCenter → 아바타 발 위치를 앵커로 잡아
-    //       수평 중앙 + 수직 바닥 기준 정렬
-    // ═══════════════════════════════════════════════════
     return Align(
       alignment: Alignment.bottomCenter,
-      child: Image.asset(
-        basePath,
-        fit: BoxFit.contain,
-        alignment: Alignment.bottomCenter, // 이미지 내부 정렬도 하단 중앙
-        errorBuilder: (c, e, s) => const Center(
-          child: Text('이미지 로드 실패', style: TextStyle(color: Colors.red)),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Image.asset(
+          basePath,
+          fit: BoxFit.contain,
+          errorBuilder: (c, e, s) => const Center(
+            child: Text('이미지 로드 실패', style: TextStyle(color: Colors.red)),
+          ),
         ),
       ),
     );
 
     /* 🧩 [나중에 복구] 레이어 합성 원본
     return Stack(
-      alignment: Alignment.bottomCenter,
+      alignment: Alignment.center,
       children: [
         for (final layer in layers)
           Align(
             alignment: Alignment.bottomCenter,
-            child: Image.asset(
-              layer.assetPath,
-              fit: BoxFit.contain,
-              alignment: Alignment.bottomCenter,
-            ),
+            child: Image.asset(layer.assetPath, fit: BoxFit.contain),
           ),
       ],
     );

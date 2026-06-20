@@ -45,24 +45,24 @@ class _CourseSelectionScreenState extends State<CourseSelectionScreen> {
   static const _courses = [
     _CourseData(
       title:         '코스 A',
-      subtitle:      '공원 순환 코스',
+      subtitle:      '시티런 코스',
       imagePath:     'assets/images/course_1.png',
-      distance:      '5.0 km',
-      estimatedTime: '약 30분',
+      distance:      '2.0 km',
+      estimatedTime: '약 14분',
     ),
     _CourseData(
       title:         '코스 B',
-      subtitle:      '하천변 안심 코스',
+      subtitle:      '한강 코스',
       imagePath:     'assets/images/course_2.png',
-      distance:      '5.2 km',
-      estimatedTime: '약 32분',
+      distance:      '2.1 km',
+      estimatedTime: '약 15분',
     ),
     _CourseData(
       title:         '코스 C',
-      subtitle:      '도심 야경 코스',
+      subtitle:      '순환 코스',
       imagePath:     'assets/images/course_3.png',
-      distance:      '4.8 km',
-      estimatedTime: '약 28분',
+      distance:      '2.4 km',
+      estimatedTime: '약 18분',
     ),
   ];
 

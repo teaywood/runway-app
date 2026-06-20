@@ -57,6 +57,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/images/my_room/
     - assets/images/my_room/avatar/
     - assets/images/my_room/items/top/thumb/
     - assets/images/my_room/items/top/wear/

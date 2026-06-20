@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 
 /// 아이템 획득 경로 (일반 / 챌린지 보상)
 enum AcquireType {
-  normal, // n: 기본 제공
+  normal,    // n: 기본 제공
   challenge, // c: 챌린지 보상
 }
 
 /// 꾸미기 카테고리 (+ 레이어 z-order + 에셋 폴더명)
 enum ClosetCategory {
-  // label, icon, layerOrder(작을수록 아래), folder(에셋 경로용)
   hair('헤어', Icons.face_retouching_natural, 50, 'hair'),
   top('상의', Icons.checkroom, 40, 'top'),
   bottom('하의', Icons.dry_cleaning, 20, 'bottom'),
@@ -37,7 +36,7 @@ class ClosetItem {
     required this.id,
     required this.name,
     required this.category,
-    required this.fileName, // thumb/wear 공통 파일명 (확장자 제외)
+    required this.fileName,
     this.acquireType = AcquireType.normal,
     this.locked = false,
   });
@@ -65,103 +64,87 @@ class ClosetItem {
   bool get isChallenge => acquireType == AcquireType.challenge;
 }
 
-// lib/screen/my_room/closet/models/closet_models.dart (하단에 추가) 또는 별도 data 파일
-
 final Map<ClosetCategory, List<ClosetItem>> kDummyClosetItems = {
   ClosetCategory.hair: [
     ClosetItem(
       id: 'hair_n1_half_up',
-      name: '1번 헤어',
+      name: '반묶음',
       category: ClosetCategory.hair,
       fileName: 'n1_half_up',
     ),
   ],
-    ClosetCategory.top: [
-    // 1. 기본 상의
+  ClosetCategory.top: [
+    // ── 1번: 해금 ✅ ──
     ClosetItem(
       id: 'top_n1_basic_tshirts',
-      name: '1번 상의',
+      name: '기본 반팔',
       category: ClosetCategory.top,
       fileName: 'n1_basic_tshirts',
     ),
-    // 2. 바람막이
+    // ── 2번: 🔒 잠금 ──
     ClosetItem(
       id: 'top_n2_white_wind_jacket',
-      name: '2번 상의',
+      name: '바람막이',
       category: ClosetCategory.top,
       fileName: 'n2_white_wind_jacket',
+      locked: true,
     ),
-    // 3. 식빵 반팔
+    // ── 3번: 🔒 잠금 ──
     ClosetItem(
       id: 'top_n3_white_bread_tshirts',
-      name: '3번 상의',
+      name: '식빵 반팔',
       category: ClosetCategory.top,
       fileName: 'n3_white_bread_tshirts',
+      locked: true,
     ),
-    // 4. 블루 원피스
+    // ── 4번: 🔒 잠금 ──
     ClosetItem(
       id: 'top_n4_blue_onepiece_dress',
-      name: '4번 상의',
+      name: '원피스',
       category: ClosetCategory.top,
       fileName: 'n4_blue_onepiece_dress',
+      locked: true,
     ),
-    // 5. 벚꽃 반팔 (챌린지 보상)
+    // ── 5번: 해금 ✅ (챌린지 보상) ──
     ClosetItem(
       id: 'top_c1_pink_cherryblossom_tshirts',
-      name: '5번 상의',
+      name: '벚꽃 반팔',
       category: ClosetCategory.top,
       fileName: 'c1_pink_cherryblossom_tshirts',
       acquireType: AcquireType.challenge,
     ),
-    // 6. 개구리 우비 (챌린지 보상)
+    // ── 6번: 🔒 잠금 ──
     ClosetItem(
       id: 'top_c2_frog_raincoat',
-      name: '6번 상의',
+      name: '개구리 우비',
       category: ClosetCategory.top,
       fileName: 'c2_frog_raincoat',
       acquireType: AcquireType.challenge,
+      locked: true,
     ),
   ],
-
   ClosetCategory.bottom: [
-    // 1. 기본 바지
     ClosetItem(
-      id: 'bottom_n1_basic_bottom',
-      name: '1번 하의',
+      id: 'bottom_n1_black_shorts',
+      name: '스포츠 반바지',
       category: ClosetCategory.bottom,
-      fileName: 'n1_basic_bottom',
-    ),
-    // 2. 검정 반바지
-    ClosetItem(
-      id: 'bottom_n2_black_shorts',
-      name: '2번 하의',
-      category: ClosetCategory.bottom,
-      fileName: 'n2_black_shorts',
+      fileName: 'n1_black_shorts',
     ),
   ],
   ClosetCategory.shoes: [
-    // 1. 기본 신발
     ClosetItem(
-      id: 'shoes_n1_basic_sneakers',
-      name: '1번 신발',
+      id: 'shoes_n1_lavender_sneakers',
+      name: '라벤더 운동화',
       category: ClosetCategory.shoes,
-      fileName: 'n1_basic_sneakers',
+      fileName: 'n1_lavender_sneakers',
     ),
   ],
   ClosetCategory.accessory: [
-    // 1. 기본 액세서리(없음)
     ClosetItem(
-      id: 'accessory_n1_no_accessory',
-      name: '1번 액세서리',
+      id: 'accessory_n1_black_hairpin',
+      name: '검정 헤어핀',
       category: ClosetCategory.accessory,
-      fileName: 'n1_no_accessory',
-    ),
-    // 2. 검정 헤어핀
-    ClosetItem(
-      id: 'accessory_n2_black_hairpin',
-      name: '2번 액세서리',
-      category: ClosetCategory.accessory,
-      fileName: 'n2_black_hairpin',
+      fileName: 'n1_black_hairpin',
     ),
   ],
 };

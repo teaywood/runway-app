@@ -36,10 +36,7 @@ class _AvatarClosetScreenState extends State<AvatarClosetScreen> {
 
   void _onItemEquip(ClosetItem item) {
     if (item.locked) return; // 미획득 아이템은 장착 불가
-    
-    // ✨ Provider에 업데이트 위임
-    final provider = context.read<SelectedAvatarProvider>();
-    provider.equipItem(_selectedCategory, item.id);
+    context.read<SelectedAvatarProvider>().equipItem(_selectedCategory, item.id);
   }
 
   /// 현재 카테고리의 아이템 목록 (더미 데이터)
@@ -48,13 +45,13 @@ class _AvatarClosetScreenState extends State<AvatarClosetScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ✨ Provider에서 현재 장착 정보 읽기
     final provider = context.watch<SelectedAvatarProvider>();
+    final equipped = provider.equipped;
     final String? equippedId = provider.getEquippedId(_selectedCategory);
 
-    // ⭐ 현재 장착 상태(_equipped) → z-order 정렬된 합성 레이어 계산
+    // ⭐ 현재 장착 상태(equipped) → z-order 정렬된 합성 레이어 계산
     final avatarLayers = resolveAvatarLayers(
-      equipped: provider.equipped,
+      equipped: equipped,
       catalog: kDummyClosetItems,
     );
 
@@ -66,25 +63,29 @@ class _AvatarClosetScreenState extends State<AvatarClosetScreen> {
             child: Image.asset(
               kClosetBackgroundAsset,
               fit: BoxFit.cover,
+              gaplessPlayback: true,
+              cacheWidth: (MediaQuery.of(context).size.width * 2).toInt(),
               errorBuilder: (_, error, stackTrace) =>
                   const ColoredBox(color: Color(0xFFF8F7FF)),
             ),
           ),
 
           // ── Layer 2. 중앙 아바타 (합성 레이어 전달) ──
-          Positioned.fill(
+          Positioned(
+            top: 30,
+            left: 0,
+            right: 0,
+            bottom: 180,
             child: ClosetAvatarViewer(
               layers: avatarLayers,
             ),
           ),
 
-          // ── Layer 3. 상단 바 (뒤로가기 + 재화) ──
+          // ── Layer 3. 상단 바 (뒤로가기만) ──
           SafeArea(
             child: Column(
               children: [
                 ClosetTopBar(
-                  coin: 1250,
-                  gem: 30,
                   onBack: () => Navigator.of(context).maybePop(),
                 ),
                 const Spacer(),
