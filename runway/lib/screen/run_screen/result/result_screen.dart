@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../shared/widgets/main_screen.dart';
+import 'widgets/reward_box.dart'; // ◀━━ 추가
 
 
 // ═══════════════════════════════════════════════════════════
@@ -246,11 +247,17 @@ class ResultScreen extends StatelessWidget {
               // ─────────────────────────────────────
               Row(
                 children: [
-                  // 보상확인 버튼 (아웃라인)
+                  // ✅ [수정] 보상확인 버튼 → RewardBox 연결
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () {
-                        // TODO: 보상 확인 화면
+                        RewardBox.show(
+                          context,
+                          challengeTitle: '벚꽃 러닝 챌린지 달성!',
+                          itemImagePath:
+                              'assets/images/my_room/items/top/thumb/c1_pink_cherryblossom_tshirts.png',
+                          itemName: '벚꽃 티셔츠',
+                        );
                       },
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: kPurple, width: 2),

@@ -22,7 +22,7 @@ class LongPressButton extends StatefulWidget {
     required this.icon,
     required this.label,
     required this.color,
-    this.holdDuration = const Duration(milliseconds: 1500),
+    this.holdDuration = const Duration(milliseconds: 1000),
   });
 
   @override

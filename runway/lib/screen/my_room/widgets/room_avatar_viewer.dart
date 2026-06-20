@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/app_theme.dart';
+import '../../../providers/selected_avatar_provider.dart';
+import '../closet/models/closet_models.dart';
+import '../closet/utils/avatar_composite_resolver.dart';
+import '../closet/widgets/closet_avatar_viewer.dart';
 
 /// 마이룸 전신 아바타 뷰어
 ///
 /// 책임:
-///  - 2.5D 전신 아바타를 당당한 포즈로 렌더링
+///  - SelectedAvatarProvider에서 현재 착용 아이템을 읽어 전신 아바타 렌더링
 ///  - 잦은 리페인트(애니메이션/액션버튼 갱신)로부터 격리하기 위해 RepaintBoundary 사용
-///  - asset 미등록 환경에서도 컴파일/렌더 가능하도록 placeholder fallback 제공
+///  - 아바타 레이어가 비어 있을 경우 placeholder fallback 제공
 class RoomAvatarViewer extends StatelessWidget {
-  const RoomAvatarViewer({super.key, this.avatarAsset});
-
-  /// 아바타 전신 이미지 asset 경로 (미지정 시 placeholder 표시)
-  final String? avatarAsset;
+  const RoomAvatarViewer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +22,21 @@ class RoomAvatarViewer extends StatelessWidget {
       child: SizedBox(
         height: 380,
         width: 220,
-        child: avatarAsset == null
-            ? const _AvatarPlaceholder()
-            : Image.asset(
-                avatarAsset!,
-                fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) => const _AvatarPlaceholder(),
-              ),
+        child: Consumer<SelectedAvatarProvider>(
+          builder: (context, avatarProvider, child) {
+            // ✅ HomeScreen과 동일한 호출 방식
+            final layers = resolveAvatarLayers(
+              equipped: avatarProvider.equipped,
+              catalog: kDummyClosetItems,
+            );
+
+            if (layers.isEmpty) {
+              return const _AvatarPlaceholder();
+            }
+
+            return ClosetAvatarViewer(layers: layers);
+          },
+        ),
       ),
     );
   }

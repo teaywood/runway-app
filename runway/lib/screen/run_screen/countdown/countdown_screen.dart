@@ -32,7 +32,7 @@ class CountdownScreen extends StatefulWidget {
 
 class _CountdownScreenState extends State<CountdownScreen> {
   // ── 카운트다운 설정값 ─────────────────────────────
-  static const int _startFrom = 5;
+  static const int _startFrom = 3;
   static const Duration _tickInterval = Duration(seconds: 1);
   static const Duration _switchAnimDuration = Duration(milliseconds: 400);
 

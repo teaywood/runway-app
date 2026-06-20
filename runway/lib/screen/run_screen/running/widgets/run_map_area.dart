@@ -13,63 +13,38 @@ class RunMapArea extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: Stack(
-        children: [
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '🗺️ MAP AREA',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey[600],
-                      letterSpacing: 2,
-                    ),
-                  ),
-                  if (overlay != null) ...[
-                    const SizedBox(height: 12),
-                    overlay!,
-                  ],
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            top: 16,
-            left: 16,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: const Text(
-                '달리는 아바타',
+      // ═══════════════════════════════════════════════
+      // ✅ [수정] Stack → Container 단순화
+      //    좌측 상단 '달리는 아바타' Positioned 블록 제거
+      //    → Stack이 불필요해져서 Container로 단순화
+      // ═══════════════════════════════════════════════
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '🗺️ MAP AREA',
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+                  color: Colors.grey[600],
+                  letterSpacing: 2,
                 ),
               ),
-            ),
+              if (overlay != null) ...[
+                const SizedBox(height: 12),
+                overlay!,
+              ],
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

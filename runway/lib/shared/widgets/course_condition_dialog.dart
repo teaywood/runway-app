@@ -1,8 +1,7 @@
 // lib/shared/widgets/course_condition_dialog.dart
 import 'package:flutter/material.dart';
 import '../../core/app_theme.dart';
-import '../../screen/run_screen/countdown/countdown_screen.dart';
-import '../../screen/run_screen/running/course_running_screen.dart';
+import '../../screen/run_screen/home/widgets/course_selection.dart';
 
 
 class CourseConditionDialog extends StatefulWidget {
@@ -15,25 +14,21 @@ class CourseConditionDialog extends StatefulWidget {
 class _CourseConditionDialogState extends State<CourseConditionDialog> {
   double _targetDistance = 5.0;
   String _courseType     = '편도';
-  bool   _safeMode       = false;
 
   void _onDistanceChanged(double v) => setState(() => _targetDistance = v);
   void _onCourseTypeChanged(String? v) {
     if (v != null) setState(() => _courseType = v);
   }
-  void _onSafeModeChanged(bool v) => setState(() => _safeMode = v);
 
-   void _onConfirm() {
-    Navigator.pop(context);
+  /// 다이얼로그 닫고 → 코스 선택 카루셀 화면으로 이동
+  void _onConfirm() {
+    Navigator.pop(context); // 다이얼로그 닫기
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => CountdownScreen(
-          targetScreen: CourseRunningScreen(
-            targetDistance: _targetDistance,
-            courseType:     _courseType,
-            safeMode:       _safeMode,
-          ),
+        builder: (_) => CourseSelectionScreen(
+          targetDistance: _targetDistance,
+          courseType:     _courseType,
         ),
       ),
     );
@@ -61,11 +56,7 @@ class _CourseConditionDialogState extends State<CourseConditionDialog> {
               value:     _courseType,
               onChanged: _onCourseTypeChanged,
             ),
-            const SizedBox(height: 20),
-            _SafeModeSwitch(
-              value:     _safeMode,
-              onChanged: _onSafeModeChanged,
-            ),
+            // ── 안심 코스 모드 삭제됨 (백엔드 기본 적용) ──
             const SizedBox(height: 28),
             _ConfirmButton(onPressed: _onConfirm),
           ],
@@ -163,39 +154,6 @@ class _CourseTypeSelector extends StatelessWidget {
               ),
             );
           }).toList(),
-        ),
-      ],
-    );
-  }
-}
-
-class _SafeModeSwitch extends StatelessWidget {
-  final bool value;
-  final ValueChanged<bool> onChanged;
-  const _SafeModeSwitch({required this.value, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Flexible(
-          child: Text(
-            '안심 코스 모드\n(CCTV/가로등 우선)',
-            style: TextStyle(
-              fontSize:   15,
-              fontWeight: FontWeight.w600,
-              color:      AppColors.textPrimary,
-            ),
-          ),
-        ),
-        Switch(
-          value:              value,
-          activeColor:        AppColors.primary,
-          activeTrackColor:   AppColors.secondary,
-          inactiveThumbColor: AppColors.textSecondary,
-          inactiveTrackColor: AppColors.cardBorder,
-          onChanged:          onChanged,
         ),
       ],
     );

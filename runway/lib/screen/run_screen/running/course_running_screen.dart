@@ -14,13 +14,12 @@ import 'widgets/course_progress_section.dart';
 class CourseRunningScreen extends StatefulWidget {
   final double targetDistance;
   final String courseType;
-  final bool safeMode;
+  // safeMode 제거됨 — 백엔드에서 기본 안심 적용
 
   const CourseRunningScreen({
     super.key,
     required this.targetDistance,
     required this.courseType,
-    required this.safeMode,
   });
 
   @override

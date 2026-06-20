@@ -1,15 +1,15 @@
 // lib/screen/loading/loading_screen.dart
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../core/app_theme.dart';
 import '../../shared/widgets/main_screen.dart';
 
 /// 앱 최초 실행 시 표시되는 스플래시(로딩) 화면
-/// 
-/// [기능]
-/// - 중앙에 로고 이미지 표시
-/// - 하단에 원형 로딩 인디케이터 + 주기적으로 변경되는 텍스트 애니메이션
-/// - 2초 후 자동으로 메인 화면(MainScreen)으로 전환
+///
+/// [수정 사항]
+/// 1. 배경색 → #F3EDFF
+/// 2. 로고 정중앙 배치 + 1.5배 확대
+/// 3. Loading 텍스트 → 하단 고정, 이탤릭, 순환 애니메이션
+///    (CircularProgressIndicator 제거)
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
 
@@ -21,23 +21,21 @@ class _LoadingScreenState extends State<LoadingScreen> {
   // ─────────────────────────────────────────────────
   // 상태 변수
   // ─────────────────────────────────────────────────
-  int _dotCount = 1; // 로딩 텍스트의 점(.) 개수 (1~3 순환)
-  Timer? _dotTimer;  // 텍스트 애니메이션용 타이머
-  Timer? _navigationTimer; // 화면 전환용 타이머
+  int _dotCount = 1;
+  Timer? _dotTimer;
+  Timer? _navigationTimer;
 
   // ─────────────────────────────────────────────────
   // 디자인 상수
   // ─────────────────────────────────────────────────
-  static const Color _backgroundColor = AppColors.primary; // 배경: 브랜드 메인 컬러
-  static const Color _loaderColor = AppColors.white;       // 로딩 인디케이터: 흰색
-  static const Color _textColor = AppColors.white;         // 텍스트: 흰색
-  static const String _logoPath = 'assets/images/logo.png'; // 로고 경로
-  static const double _logoSize = 120.0;                    // 로고 크기
-  static const double _loaderSize = 32.0;                   // 인디케이터 지름
-  static const double _spacing = 24.0;                      // 로고 ↔ 로더 간격
+  static const Color _backgroundColor = Color(0xFFF3EDFF); // ✅ [수정1] 배경색 변경
+  static const Color _textColor = Color(0xFF2D2D3A);        // 텍스트: 다크 계열
+  static const String _logoPath = 'assets/images/logo.png';
+  static const double _logoBaseSize = 120.0;
+  static const double _logoScale = 1.5;                     // ✅ [수정2] 1.5배
 
   // ─────────────────────────────────────────────────
-  // 생명주기: 초기화
+  // 생명주기
   // ─────────────────────────────────────────────────
   @override
   void initState() {
@@ -53,20 +51,14 @@ class _LoadingScreenState extends State<LoadingScreen> {
     super.dispose();
   }
 
-  // ─────────────────────────────────────────────────
-  // 로직: 텍스트 애니메이션 (loading. → loading.. → loading...)
-  // ─────────────────────────────────────────────────
   void _startDotAnimation() {
     _dotTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
       setState(() {
-        _dotCount = (_dotCount % 3) + 1; // 1 → 2 → 3 → 1 순환
+        _dotCount = (_dotCount % 3) + 1;
       });
     });
   }
 
-  // ─────────────────────────────────────────────────
-  // 로직: 2초 후 메인 화면으로 자동 전환
-  // ─────────────────────────────────────────────────
   void _scheduleNavigation() {
     _navigationTimer = Timer(const Duration(seconds: 2), () {
       if (!mounted) return;
@@ -83,43 +75,40 @@ class _LoadingScreenState extends State<LoadingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _backgroundColor,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // ─── 로고 이미지 (아바타 방식과 동일) ───
-            Image.asset(
+      body: Stack(
+        children: [
+          // ═══════════════════════════════════════════
+          // ✅ [수정2] 로고: 화면 정중앙 + 1.5배
+          // ═══════════════════════════════════════════
+          Center(
+            child: Image.asset(
               _logoPath,
-              width: _logoSize,
-              height: _logoSize,
+              width: _logoBaseSize * _logoScale,   // 120 × 1.5 = 180
+              height: _logoBaseSize * _logoScale,
             ),
+          ),
 
-            const SizedBox(height: _spacing * 2),
-
-            // ─── 로딩 인디케이터 ───
-            SizedBox(
-              width: _loaderSize,
-              height: _loaderSize,
-              child: CircularProgressIndicator(
-                strokeWidth: 3.0,
-                valueColor: const AlwaysStoppedAnimation<Color>(_loaderColor),
+          // ═══════════════════════════════════════════
+          // ✅ [수정3] Loading 텍스트: 하단 중앙, 이탤릭
+          // ═══════════════════════════════════════════
+          Positioned(
+            bottom: 60,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Text(
+                'Loading${'.' * _dotCount}',
+                style: TextStyle(
+                  color: _textColor.withOpacity(0.5),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  fontStyle: FontStyle.italic, // 기울임
+                  letterSpacing: 1.2,
+                ),
               ),
             ),
-
-            const SizedBox(height: _spacing),
-
-            // ─── 로딩 텍스트 (애니메이션) ───
-            Text(
-              'loading${'.' * _dotCount}',
-              style: const TextStyle(
-                color: _textColor,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                letterSpacing: 1.2,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -17,7 +17,12 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+        // ═══════════════════════════════════════════════
+        // ✅ [수정] title 중앙 정렬
+        // ═══════════════════════════════════════════════
+        centerTitle: true,
         leadingWidth: 0,
+        leading: const SizedBox.shrink(), // leading 영역 제거 → 좌우 대칭
         title: const Row(
           mainAxisSize: MainAxisSize.min,
           children: [
