@@ -1,6 +1,12 @@
-// lib/screen/home/home_screen.dart
+// lib/screen/run_screen/home/home_screen.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../../../core/app_theme.dart';
+import '../../../providers/selected_avatar_provider.dart';
+import '../../my_room/closet/models/closet_models.dart';
+import '../../my_room/closet/utils/avatar_composite_resolver.dart';
+import '../../my_room/closet/widgets/closet_avatar_viewer.dart';
 import 'widgets/running_mode_toggle.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -18,9 +24,9 @@ class HomeScreen extends StatelessWidget {
             Text(
               'RUN-WAY',
               style: TextStyle(
-                color:         AppColors.textPrimary,
-                fontWeight:    FontWeight.bold,
-                fontSize:      22,
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.bold,
+                fontSize: 22,
                 letterSpacing: 2,
               ),
             ),
@@ -46,10 +52,10 @@ class HomeScreen extends StatelessWidget {
       body: const SafeArea(
         child: Column(
           children: [
-            // ── 아바타 영역 (TODO: 추후 AvatarView 추가) ──
+            // ── ✨ 아바타 영역 (이제 활성화!) ──
             Expanded(
               flex: 5,
-              child: SizedBox.shrink(),
+              child: _HomeAvatarSection(),
             ),
             // ── 러닝 모드 선택 영역 ─────────────────
             Expanded(
@@ -60,5 +66,23 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// 홈 화면 아바타 섹션 (Provider 구독)
+class _HomeAvatarSection extends StatelessWidget {
+  const _HomeAvatarSection();
+
+  @override
+  Widget build(BuildContext context) {
+    // ✨ Provider 구독: 마이룸에서 선택한 아이템 자동 반영
+    final provider = context.watch<SelectedAvatarProvider>();
+
+    final avatarLayers = resolveAvatarLayers(
+      equipped: provider.equipped,
+      catalog: kDummyClosetItems,
+    );
+
+    return ClosetAvatarViewer(layers: avatarLayers);
   }
 }

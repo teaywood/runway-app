@@ -71,48 +71,97 @@ final Map<ClosetCategory, List<ClosetItem>> kDummyClosetItems = {
   ClosetCategory.hair: [
     ClosetItem(
       id: 'hair_n1_half_up',
-      name: '반묶음',
+      name: '1번 헤어',
       category: ClosetCategory.hair,
       fileName: 'n1_half_up',
     ),
   ],
-  ClosetCategory.top: [
+    ClosetCategory.top: [
+    // 1. 기본 상의
     ClosetItem(
-      id: 'top_n1_white_wind_jacket',
-      name: '바람막이',
+      id: 'top_n1_basic_tshirts',
+      name: '1번 상의',
       category: ClosetCategory.top,
-      fileName: 'n1_white_wind_jacket',
+      fileName: 'n1_basic_tshirts',
     ),
+    // 2. 바람막이
+    ClosetItem(
+      id: 'top_n2_white_wind_jacket',
+      name: '2번 상의',
+      category: ClosetCategory.top,
+      fileName: 'n2_white_wind_jacket',
+    ),
+    // 3. 식빵 반팔
+    ClosetItem(
+      id: 'top_n3_white_bread_tshirts',
+      name: '3번 상의',
+      category: ClosetCategory.top,
+      fileName: 'n3_white_bread_tshirts',
+    ),
+    // 4. 블루 원피스
+    ClosetItem(
+      id: 'top_n4_blue_onepiece_dress',
+      name: '4번 상의',
+      category: ClosetCategory.top,
+      fileName: 'n4_blue_onepiece_dress',
+    ),
+    // 5. 벚꽃 반팔 (챌린지 보상)
     ClosetItem(
       id: 'top_c1_pink_cherryblossom_tshirts',
-      name: '벚꽃 반팔',
+      name: '5번 상의',
       category: ClosetCategory.top,
       fileName: 'c1_pink_cherryblossom_tshirts',
-      acquireType: AcquireType.challenge, // ⭐ 챌린지 보상
+      acquireType: AcquireType.challenge,
+    ),
+    // 6. 개구리 우비 (챌린지 보상)
+    ClosetItem(
+      id: 'top_c2_frog_raincoat',
+      name: '6번 상의',
+      category: ClosetCategory.top,
+      fileName: 'c2_frog_raincoat',
+      acquireType: AcquireType.challenge,
     ),
   ],
+
   ClosetCategory.bottom: [
+    // 1. 기본 바지
     ClosetItem(
-      id: 'bottom_n1_black_shorts',
-      name: '스포츠 반바지',
+      id: 'bottom_n1_basic_bottom',
+      name: '1번 하의',
       category: ClosetCategory.bottom,
-      fileName: 'n1_black_shorts',
+      fileName: 'n1_basic_bottom',
+    ),
+    // 2. 검정 반바지
+    ClosetItem(
+      id: 'bottom_n2_black_shorts',
+      name: '2번 하의',
+      category: ClosetCategory.bottom,
+      fileName: 'n2_black_shorts',
     ),
   ],
   ClosetCategory.shoes: [
+    // 1. 기본 신발
     ClosetItem(
-      id: 'shoes_n1_lavender_sneakers',
-      name: '라벤더 운동화',
+      id: 'shoes_n1_basic_sneakers',
+      name: '1번 신발',
       category: ClosetCategory.shoes,
-      fileName: 'n1_lavender_sneakers',
+      fileName: 'n1_basic_sneakers',
     ),
   ],
   ClosetCategory.accessory: [
+    // 1. 기본 액세서리(없음)
     ClosetItem(
-      id: 'accessory_n1_black_hairpin',
-      name: '검정 헤어핀',
+      id: 'accessory_n1_no_accessory',
+      name: '1번 액세서리',
       category: ClosetCategory.accessory,
-      fileName: 'n1_black_hairpin',
+      fileName: 'n1_no_accessory',
+    ),
+    // 2. 검정 헤어핀
+    ClosetItem(
+      id: 'accessory_n2_black_hairpin',
+      name: '2번 액세서리',
+      category: ClosetCategory.accessory,
+      fileName: 'n2_black_hairpin',
     ),
   ],
 };

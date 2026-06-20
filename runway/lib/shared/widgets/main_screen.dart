@@ -41,6 +41,8 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onTabTapped,
+        selectedItemColor: Theme.of(context).primaryColor,
+        unselectedItemColor: const Color(0xFFA0A0A0),
         items: _tabs
             .map((t) => BottomNavigationBarItem(
                   icon: Icon(t.icon),

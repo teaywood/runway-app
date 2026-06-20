@@ -44,3 +44,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# .gitignore 파일에 추가
+.venv/
+**/.venv/
+__pycache__/
+*.pyc

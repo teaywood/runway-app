@@ -1,6 +1,8 @@
 // lib/screen/my_room/closet/avatar_closet_screen.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../providers/selected_avatar_provider.dart';
 import 'models/closet_models.dart';
 import 'widgets/closet_avatar_viewer.dart';
 import 'widgets/closet_category_menu.dart';
@@ -28,24 +30,16 @@ class _AvatarClosetScreenState extends State<AvatarClosetScreen> {
   /// 현재 선택된 카테고리
   ClosetCategory _selectedCategory = ClosetCategory.top;
 
-  /// 카테고리별 현재 장착(착용 중) 아이템 id
-  // avatar_closet_screen.dart
-  final Map<ClosetCategory, String> _equipped = {
-    ClosetCategory.hair: 'hair_n1_half_up',
-    ClosetCategory.top: 'top_n1_white_wind_jacket',
-    ClosetCategory.bottom: 'bottom_n1_black_shorts',
-    ClosetCategory.shoes: 'shoes_n1_lavender_sneakers',
-    ClosetCategory.accessory: 'accessory_n1_black_hairpin',
-  };
-
-
   void _onCategorySelected(ClosetCategory category) {
     setState(() => _selectedCategory = category);
   }
 
   void _onItemEquip(ClosetItem item) {
     if (item.locked) return; // 미획득 아이템은 장착 불가
-    setState(() => _equipped[_selectedCategory] = item.id);
+    
+    // ✨ Provider에 업데이트 위임
+    final provider = context.read<SelectedAvatarProvider>();
+    provider.equipItem(_selectedCategory, item.id);
   }
 
   /// 현재 카테고리의 아이템 목록 (더미 데이터)
@@ -54,16 +48,17 @@ class _AvatarClosetScreenState extends State<AvatarClosetScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final String? equippedId = _equipped[_selectedCategory];
+    // ✨ Provider에서 현재 장착 정보 읽기
+    final provider = context.watch<SelectedAvatarProvider>();
+    final String? equippedId = provider.getEquippedId(_selectedCategory);
 
     // ⭐ 현재 장착 상태(_equipped) → z-order 정렬된 합성 레이어 계산
     final avatarLayers = resolveAvatarLayers(
-      equipped: _equipped,
+      equipped: provider.equipped,
       catalog: kDummyClosetItems,
     );
 
     return Scaffold(
-
       body: Stack(
         children: [
           // ── Layer 1. 전체 배경 ──
@@ -80,7 +75,7 @@ class _AvatarClosetScreenState extends State<AvatarClosetScreen> {
           Positioned.fill(
             child: ClosetAvatarViewer(
               layers: avatarLayers,
-            ), // ⭐ const 제거 + layers 전달
+            ),
           ),
 
           // ── Layer 3. 상단 바 (뒤로가기 + 재화) ──
