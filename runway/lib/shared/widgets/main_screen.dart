@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import '../../screen/run_screen/home/home_screen.dart';
 import '../../screen/my_room/my_room_screen.dart';
+import '../../screen/social_screen/social_screen.dart';
 import 'placeholder_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -24,7 +25,7 @@ class _MainScreenState extends State<MainScreen> {
   static final List<Widget> _screens = [
     const HomeScreen(),
     const MyRoomScreen(),
-    const PlaceholderScreen(title: '소셜',   icon: Icons.groups_rounded),
+    const SocialScreen(),
     const PlaceholderScreen(title: '챌린지', icon: Icons.emoji_events_rounded),
   ];
 
